@@ -33,13 +33,12 @@
 1. RHDSにて[**Solution Pattern - Edge to Core Data Pipelines for AI/ML**](https://demo.redhat.com/catalog?item=babylon-catalog-prod/community-content.com-edge-to-core.prod&utm_source=webapp&utm_medium=share-link)をデプロイする
 2. RHDS にアクセスできない場合、OpenShift 環境が最低限利用可能であることを確認し、前提条件となる製品バージョンを満たして Red Hat OpenShift AI をインストールします (製品バージョンを調べるには、「_Tested with_」セクションを参照してください)。
 
-<br/>
 
 ## 2. ソリューションパターンのデプロイ
 
 以降の手順は、以下の環境が存在することを前提としています。
 
-* ローカル環境に_Docker_、_Podman_、または`ansible-playbook`がインストールされている。
+* ローカル環境に _Docker_、_Podman_、または`ansible-playbook`がインストールされている。
 * RHDSを使用してOCPクラスタ（OCP 4.12 + RHOAI 2.8でテスト済み）をプロビジョニングし、bastionサーバが利用可能である。
 
 <br/>
