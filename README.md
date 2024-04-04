@@ -73,6 +73,7 @@ oc login --username="admin" --server=https://(...):6443 --insecure-skip-tls-veri
 > `--server` は、お使いのOpenShiftクラスタのAPIエンドポイントのURLへ置き換えてください。
 
 **3-3-3. Ansible Playbookを実行**
+
 *Dockerを使う場合*
 
 ```sh
@@ -119,12 +120,12 @@ oc login --username="admin" --server=https://(...):6443 --insecure-skip-tls-veri
 
 > `--server` は、お使いのOpenShiftクラスタのAPIエンドポイントのURLへ置き換えてください。
 
-#### 以下のプロパティを設定
+### 以下のプロパティを設定
 ``` sh
 TARGET_HOST="lab-user@bastion.b9ck5.sandbox1880.opentlc.com"
 ```
 
-#### Ansible Playbookを実行
+### Ansible Playbookを実行
 ```sh
 podman run -i -t --rm --entrypoint /usr/local/bin/ansible-playbook \
 -v $PWD:/runner \
@@ -135,24 +136,23 @@ quay.io/agnosticd/ee-multicloud:v0.0.11  \
 
 ## 4. エッジ環境を追加でデプロイする方法
 
-2のインストールを行うと、デフォルトで以下のゾーンがデプロイされています。
+インストールを行うと、デフォルトで以下のゾーンがデプロイされています。
  - `edge1`: 推論処理を行うエッジ環境
  - `central`: MLモデルを学習するコア・データセンター
 
-<br>
 
 本ソリューションパターンのアーキテクチャでは、下図のように、多くのエッジ環境をコア・データセンターに接続することができます：
 
 ![image](docs/images/01-full-architecture.png)
 
-新しい _Edge_ 環境をデプロイするために、上記と同じコマンドを使用します。ただし、以下の環境変数パラメータを追加してください。
+新しいエッジ環境をデプロイするために、上記と同じコマンドを使用します。ただし、以下の環境変数パラメータを追加してください。
 - `-e EDGE_NAME=[your-edge-name]`
 
 例えば、以下のパラメータ定義を使用します。
 ```sh no-copy
 ... ./ansible/install.yaml -e EDGE_NAME=zone2
 ```
-新しい namespace `edge-zone2` が作成されると、そこへ、全ての _Edge_ アプリケーションとインテグレーションがデプロイされます。 
+新しい namespace `edge-zone2` が作成されると、そこへ、全てのエッジアプリケーションとインテグレーションがデプロイされます。 
 
 ## 5. アンインストール
 
