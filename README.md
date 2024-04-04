@@ -1,13 +1,15 @@
 # Solution Pattern: Edge-to-Core Data Pipelines for AI/ML
 
-The Edge to Core Data Pipelines for AI/ML solution pattern provides an architecture solution for scenarios in which edge devices generate image data, which must be collected, processed, and stored at the edge before being utilized to train AI/ML models at the core data center or cloud.
+本プロジェクトは、[このプロジェクト](https://github.com/brunoNetId/sp-edge-to-cloud-data-pipelines-demo)のforkです。
 
-This solution pattern contains resources to showcase a full circle continuous motion of data to capture training data, train new ML models, deploy them, serve them, and expose the service for clients to send inference requests.
+本プロジェクトでは、AI/MLの実装における、エッジからコアへのデータ・パイプラインのソリューション・パターンを提供します。
+具体的には、エッジ・デバイスが画像データを生成し、コア・データセンターやクラウドでAI/MLモデルのトレーニングを実行する前に、エッジでデータを収集・処理・保存する必要があるシナリオにおけるアーキテクチャ・ソリューションを提供します。
 
+このソリューション・パターンには、トレーニング・データを取得し、新しいMLモデルをトレーニングし、それらをエッジへデプロイして提供し、クライアントが推論リクエストを送信するためのサービスを公開する、データの一連の動きを示すリソースが含まれています。
 
 ## Home page
 
-Head to the Solution Pattern's home page to get the full context of this demo sources. You can find it following the link below:
+このデモの全容を知るには、ソリューション・パターンのホームページをご覧ください。以下のリンクからご覧いただけます。
 
 - [**Solution Pattern Home Page**](https://redhat-solution-patterns.github.io/solution-pattern-edge-to-cloud-pipelines/solution-pattern-edge-to-core-pipelines/index.html)
 
@@ -29,33 +31,30 @@ Head to the Solution Pattern's home page to get the full context of this demo so
 
 ### 2. Provision an OpenShift environment
 
-1. Provision the following RHDP item:
-    * [**Solution Pattern - Edge to Core Data Pipelines for AI/ML**](https://demo.redhat.com/catalog?item=babylon-catalog-prod/community-content.com-edge-to-core.prod&utm_source=webapp&utm_medium=share-link)
-
-   <br/>
-
-1. Alternatively, if you don't have access to RHDP, ensure you have an OpenShift environment available and install Red Hat OpenShift AI, meeting the pre-requisite product versions (see '_Tested with_' section to inspect product versions).
+1. RHDSにて[**Solution Pattern - Edge to Core Data Pipelines for AI/ML**](https://demo.redhat.com/catalog?item=babylon-catalog-prod/community-content.com-edge-to-core.prod&utm_source=webapp&utm_medium=share-link)をデプロイする
+2. RHDS にアクセスできない場合、OpenShift 環境が最低限利用可能であることを確認し、前提条件となる製品バージョンを満たして Red Hat OpenShift AI をインストールします (製品バージョンを調べるには、「_Tested with_」セクションを参照してください)。
 
 <br/>
 
 ### 2. Deploy the Solution Pattern
 
-The instructions below assume:
-* You either have _Docker_, _Podman_ or `ansible-playbook` installed on your local environment.
-* You have provisioned an OCP instance (tested with OCP 4.12 + RHOAI 2.8), using RHDP, and a bastion server is available.
+以降の手順は、以下の環境が存在することを前提としています。
+
+* ローカル環境に_Docker_、_Podman_、または`ansible-playbook`がインストールされている。
+* RHDSを使用してOCPクラスタ（OCP 4.12 + RHOAI 2.8でテスト済み）をプロビジョニングし、bastionサーバが利用可能である。
 
 <br/>
 
 
 #### Install the demo
 
-1. Clone this GitHub repository:
+1. GitHubリポジトリをclone
 
     ```sh
     git clone https://github.com/brunoNetId/sp-edge-to-cloud-data-pipelines-demo.git
     ```
 
-1. Change to root directory of the project.
+1. プロジェクトのrootディレクトリへcd
 
     ```sh
     cd sp-edge-to-cloud-data-pipelines-demo
@@ -63,25 +62,25 @@ The instructions below assume:
 
     <br/>
 
-1. When running with _Docker_ or _Podman_
+2. _Docker_ または _Podman_ が動作している場合
     
-    1. Configure the `KUBECONFIG` file to use (where kube details are set after login).
+    1. `KUBECONFIG` ファイルを構成する (OpenShiftクラスタへログイン後に kube-demo の詳細が設定されます)。
 
         ```sh
         export KUBECONFIG=./ansible/kube-demo
         ```
 
-    1. Login into your OpenShift cluster from the `oc` command line.
+    2.OpenShift クラスタへログイン ( `oc` コマンド )
 
         ```sh
         oc login --username="admin" --server=https://(...):6443 --insecure-skip-tls-verify=true
         ```
 
-        Replace the `--server` url with your own cluster API endpoint.
+        `--server` は、お使いのOpenShiftクラスタのAPIエンドポイントのURLへ置き換えてください。
 
-    1. Run the Playbook
+    2. Ansible Playbookを実行
 
-        1. With Docker:
+        1. Dockerを使う場合:
         
             ```sh
             docker run -i -t --rm --entrypoint /usr/local/bin/ansible-playbook \
@@ -91,7 +90,7 @@ The instructions below assume:
             ./ansible/install.yaml
             ```
         
-        1. With Podman:
+        2. Podmanを使う場合:
         
             ```sh
             podman run -i -t --rm --entrypoint /usr/local/bin/ansible-playbook \
@@ -99,58 +98,58 @@ The instructions below assume:
             -v $PWD/ansible/kube-demo:/home/runner/.kube/config \
             quay.io/agnosticd/ee-multicloud:v0.0.11  \
             ./ansible/install.yaml
-
             ```
     <br/>
 
-1. When running with Ansible Playbook (installed on your machine)
+2'. Ansible Playbook（ローカルマシンにインストール済み）で実行する場合
 
-    1. Login into your OpenShift cluster from the `oc` command line.
+    1. OpenShift クラスタへログイン ( `oc` コマンド )
 
-        For example with: \
+        例: \
         ```sh
         oc login --username="admin" --server=https://(...):6443 --insecure-skip-tls-verify=true
         ```
-        (Replace the `--server` url with your own cluster API endpoint)
+        (`--server` は、お使いのOpenShiftクラスタのAPIエンドポイントのURLへ置き換えてください。)
 
-    1. Set the following property:
+    2. 以下のプロパティを設定:
         ```
         TARGET_HOST="lab-user@bastion.b9ck5.sandbox1880.opentlc.com"
         ```
-    2. Run Ansible Playbook
+    3. Ansible Playbookを実行
         ```sh
-        ansible-playbook -i $TARGET_HOST,ansible/inventory/openshift.yaml ./ansible/install.yaml
+        podman run -i -t --rm --entrypoint /usr/local/bin/ansible-playbook \
+        -v $PWD:/runner \
+        -v $PWD/ansible/kube-demo:/home/runner/.kube/config \
+        quay.io/agnosticd/ee-multicloud:v0.0.11  \
+        -i $TARGET_HOST,ansible/inventory/openshift.yaml ./ansible/install.yaml
         ```
 
 <br/>
 
-### 3. Deploy more Edge environments
+### 3. エッジ環境を追加でデプロイする方法
 
-The default installation deploys the following zones:
- - `edge1`: represents the Edge environment where live inferencing occurs.
- - `central`: represents the Core data centre where Models are trained
+2のインストールを行うと、デフォルトで以下のゾーンがデプロイされています。
+ - `edge1`: 推論処理を行うエッジ環境
+ - `central`: MLモデルを学習するコア・データセンター
 
 <br>
 
-The Solution Pattern's architecture allows for more _Edge_ environments to be connected to the main data centre, as per the illustration below:
+本ソリューションパターンのアーキテクチャでは、下図のように、多くのエッジ環境をコア・データセンターに接続することができます：
 
 ![image](docs/images/01-full-architecture.png)
 
-To deploy new _Edge_ environments, use the same commands as above, but adding the following environment parameter:
+新しい _Edge_ 環境をデプロイするために、上記と同じコマンドを使用します。ただし、以下の環境変数パラメータを追加してください。
 - `-e EDGE_NAME=[your-edge-name]`
 
-For example, using the following parameter definition:
+例えば、以下のパラメータ定義を使用します。
 ```sh no-copy
 ... ./ansible/install.yaml -e EDGE_NAME=zone2
 ```
-will create a new namespace `edge-zone2` where all the _Edge_ applications and integrations will be deployed.
+新しい namespace `edge-zone2` が作成されると、そこへ、全ての _Edge_ アプリケーションとインテグレーションがデプロイされます。 
 
 <br/>
 
 ### 3. Undeploy the Solution Pattern
 
-If you wish to undeploy the demo, use the same commands as above, but with:
+もしアンインストールしたい場合は、上記のインストールコマンドの末尾の`./install.yaml`を以下に差し替えてください。
  - `./uninstall.yaml`
-
-Instead of:
- - ~~`./install.yaml`~~
