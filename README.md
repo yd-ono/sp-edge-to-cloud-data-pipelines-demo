@@ -7,14 +7,14 @@
 
 このソリューション・パターンには、トレーニング・データを取得し、新しいMLモデルをトレーニングし、それらをエッジへデプロイして提供し、クライアントが推論リクエストを送信するためのサービスを公開する、データの一連の動きを示すリソースが含まれています。
 
-## Home page
+# 参考サイト
 
 このデモの全容を知るには、ソリューション・パターンのホームページをご覧ください。以下のリンクからご覧いただけます。
 
 - [**Solution Pattern Home Page**](https://redhat-solution-patterns.github.io/solution-pattern-edge-to-cloud-pipelines/solution-pattern-edge-to-core-pipelines/index.html)
 
 
-## Tested with
+# テスト済みの構成
 
 * RH OpenShift 4.12.12
 * RHODF 4.12.11 provided by Red Hat
@@ -27,16 +27,15 @@
 * RH Service Interconnect 1.4.4-rh-1 provided by Red Hat
 
 
-## Deployment instructions
-
-### 2. Provision an OpenShift environment
+# デプロイ手順
+## 1. OpenShift環境のプロビジョニング
 
 1. RHDSにて[**Solution Pattern - Edge to Core Data Pipelines for AI/ML**](https://demo.redhat.com/catalog?item=babylon-catalog-prod/community-content.com-edge-to-core.prod&utm_source=webapp&utm_medium=share-link)をデプロイする
 2. RHDS にアクセスできない場合、OpenShift 環境が最低限利用可能であることを確認し、前提条件となる製品バージョンを満たして Red Hat OpenShift AI をインストールします (製品バージョンを調べるには、「_Tested with_」セクションを参照してください)。
 
 <br/>
 
-### 2. Deploy the Solution Pattern
+## 2. ソリューションパターンのデプロイ
 
 以降の手順は、以下の環境が存在することを前提としています。
 
@@ -46,87 +45,96 @@
 <br/>
 
 
-#### Install the demo
+## 3. デモのインストール
 
-1. GitHubリポジトリをclone
+### 3-1. GitHubリポジトリをclone
 
-    ```sh
-    git clone https://github.com/brunoNetId/sp-edge-to-cloud-data-pipelines-demo.git
-    ```
+```sh
+git clone https://github.com/brunoNetId/sp-edge-to-cloud-data-pipelines-demo.git
+```
 
-1. プロジェクトのrootディレクトリへcd
+### 3-2. プロジェクトのrootディレクトリへcd
 
-    ```sh
-    cd sp-edge-to-cloud-data-pipelines-demo
-    ```
+```sh
+cd sp-edge-to-cloud-data-pipelines-demo
+```
 
-    <br/>
+### 3-3. _Docker_ または _Podman_ が動作している場合
+**3-3-1. `KUBECONFIG` ファイルを構成する (OpenShiftクラスタへログイン後に kube-demo の詳細が設定されます)。**
+```sh
+export KUBECONFIG=./ansible/kube-demo
+```
 
-2. _Docker_ または _Podman_ が動作している場合
-    
-    1. `KUBECONFIG` ファイルを構成する (OpenShiftクラスタへログイン後に kube-demo の詳細が設定されます)。
+**3-3-2. OpenShift クラスタへログイン ( `oc` コマンド )**
 
-        ```sh
-        export KUBECONFIG=./ansible/kube-demo
-        ```
+```sh
+oc login --username="admin" --server=https://(...):6443 --insecure-skip-tls-verify=true
+```
 
-    2.OpenShift クラスタへログイン ( `oc` コマンド )
+> `--server` は、お使いのOpenShiftクラスタのAPIエンドポイントのURLへ置き換えてください。
 
-        ```sh
-        oc login --username="admin" --server=https://(...):6443 --insecure-skip-tls-verify=true
-        ```
+**3-3-3. Ansible Playbookを実行**
+*Dockerを使う場合*
 
-        `--server` は、お使いのOpenShiftクラスタのAPIエンドポイントのURLへ置き換えてください。
+```sh
+docker run -i -t --rm --entrypoint /usr/local/bin/ansible-playbook \
+-v $PWD:/runner \
+-v $PWD/ansible/kube-demo:/home/runner/.kube/config \
+quay.io/agnosticd/ee-multicloud:v0.0.11  \
+./ansible/install.yaml
+```
 
-    2. Ansible Playbookを実行
+*Podmanを使う場合*
 
-        1. Dockerを使う場合:
-        
-            ```sh
-            docker run -i -t --rm --entrypoint /usr/local/bin/ansible-playbook \
-            -v $PWD:/runner \
-            -v $PWD/ansible/kube-demo:/home/runner/.kube/config \
-            quay.io/agnosticd/ee-multicloud:v0.0.11  \
-            ./ansible/install.yaml
-            ```
-        
-        2. Podmanを使う場合:
-        
-            ```sh
-            podman run -i -t --rm --entrypoint /usr/local/bin/ansible-playbook \
-            -v $PWD:/runner \
-            -v $PWD/ansible/kube-demo:/home/runner/.kube/config \
-            quay.io/agnosticd/ee-multicloud:v0.0.11  \
-            ./ansible/install.yaml
-            ```
-    <br/>
+```sh
+podman run -i -t --rm --entrypoint /usr/local/bin/ansible-playbook \
+-v $PWD:/runner \
+-v $PWD/ansible/kube-demo:/home/runner/.kube/config \
+quay.io/agnosticd/ee-multicloud:v0.0.11  \
+./ansible/install.yaml
+```
 
-2'. Ansible Playbook（ローカルマシンにインストール済み）で実行する場合
+ブラウザを開いて以下のURLへアクセスし、デモを実施できます！
 
-    1. OpenShift クラスタへログイン ( `oc` コマンド )
+*ユーザ向け画面*
+```
+https://[camel-edgeのRouteのURL]/
+```
 
-        例: \
-        ```sh
-        oc login --username="admin" --server=https://(...):6443 --insecure-skip-tls-verify=true
-        ```
-        (`--server` は、お使いのOpenShiftクラスタのAPIエンドポイントのURLへ置き換えてください。)
+*講師向け画面*
+```
+https://[camel-edgeのRouteのURL]/admin.html
+```
 
-    2. 以下のプロパティを設定:
-        ```
-        TARGET_HOST="lab-user@bastion.b9ck5.sandbox1880.opentlc.com"
-        ```
-    3. Ansible Playbookを実行
-        ```sh
-        podman run -i -t --rm --entrypoint /usr/local/bin/ansible-playbook \
-        -v $PWD:/runner \
-        -v $PWD/ansible/kube-demo:/home/runner/.kube/config \
-        quay.io/agnosticd/ee-multicloud:v0.0.11  \
-        -i $TARGET_HOST,ansible/inventory/openshift.yaml ./ansible/install.yaml
-        ```
+![demo](images/demo.png)
 
-<br/>
+デモの詳細は、[**Solution Pattern Home Page**](https://redhat-solution-patterns.github.io/solution-pattern-edge-to-cloud-pipelines/solution-pattern-edge-to-core-pipelines/index.html)をご参照ください。
 
-### 3. エッジ環境を追加でデプロイする方法
+## (option) Ansible Playbook（ローカルマシンにインストール済み）で実行する場合
+
+### OpenShift クラスタへログイン ( `oc` コマンド )
+
+```sh
+oc login --username="admin" --server=https://(...):6443 --insecure-skip-tls-verify=true
+```
+
+> `--server` は、お使いのOpenShiftクラスタのAPIエンドポイントのURLへ置き換えてください。
+
+#### 以下のプロパティを設定
+``` sh
+TARGET_HOST="lab-user@bastion.b9ck5.sandbox1880.opentlc.com"
+```
+
+#### Ansible Playbookを実行
+```sh
+podman run -i -t --rm --entrypoint /usr/local/bin/ansible-playbook \
+-v $PWD:/runner \
+-v $PWD/ansible/kube-demo:/home/runner/.kube/config \
+quay.io/agnosticd/ee-multicloud:v0.0.11  \
+-i $TARGET_HOST,ansible/inventory/openshift.yaml ./ansible/install.yaml
+```
+
+## 4. エッジ環境を追加でデプロイする方法
 
 2のインストールを行うと、デフォルトで以下のゾーンがデプロイされています。
  - `edge1`: 推論処理を行うエッジ環境
@@ -147,9 +155,45 @@
 ```
 新しい namespace `edge-zone2` が作成されると、そこへ、全ての _Edge_ アプリケーションとインテグレーションがデプロイされます。 
 
-<br/>
-
-### 3. Undeploy the Solution Pattern
+## 5. アンインストール
 
 もしアンインストールしたい場合は、上記のインストールコマンドの末尾の`./install.yaml`を以下に差し替えてください。
  - `./uninstall.yaml`
+
+## 6. Hard way
+Ansibleでなく手動でインストールする場合は、[こちら](https://github.com/yd-ono/rhods-transfer-learning/tree/main)の手順を参照してください。
+
+
+## おまけ① Filestashのインストール
+
+[Filestash](https://www.filestash.app/)を使用することで、MinIO上のバケットに格納された画像ファイルを視覚的に確認することができます。
+
+以下の手順で、Helmを用いてインストールできます。
+
+```bash
+oc project edge1
+helm repo add filestash https://sebagarayco.github.io/helm-filestash
+helm search repo filestash
+helm install filestash filestash/filestash --namespace='edge1' --set serviceAccount.name='filestash'
+oc adm policy add-scc-to-user anyuid -z filestash
+oc expose service filestash -n edge1
+```
+
+FilestashのRouteへアクセスし、S3への接続設定でMinIOのエンドポイントとユーザ名、パスワードを指定すると以下のようにバケット内のデータへアクセスできます。
+
+Routeのエンドポイントへ開き、S3の設定を行うと以下のようにバケットの中身を参照できます。
+![filestash](./images/filestash.png)
+
+## おまけ② AKHQのインストール
+[AKHQ](https://akhq.io/)は、Kafka上のTopicに書き込まれたデータを確認できるGUIツールです。以下のようにHelmからインストールできます。
+
+```bash
+oc project central
+helm repo add akhq https://akhq.io/
+helm inspect values akhq/akhq
+helm upgrade --install akhq akhq/akhq --set secrets.akhq.connections.my-cluster-plain-text.properties.bootstrap.servers=my-cluster-kafka-bootstrap:9092
+oc expose service akhq -n central
+```
+
+Routeのエンドポイントへアクセスすると、以下の画面が開きます。
+![akhq](images/akhq.png)
