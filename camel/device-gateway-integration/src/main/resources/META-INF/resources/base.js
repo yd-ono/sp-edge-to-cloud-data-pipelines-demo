@@ -19,34 +19,39 @@ var monitorQueue = []
 function initMqtt(){
 
 
-    var brokerHost = window.location.hostname.replace("camel-edge", "broker-amq-mqtt")
-    // var brokerHost = window.location.hostname.replace("camel-edge", "broker-amq-hdls-svc")
-    var brokerPort = window.location.port 
-    const brokerUrl=window.location.href+"/test"
+  // var brokerHost = window.location.hostname.replace("camel-edge", "broker-amq-mqtt")
+  // // var brokerHost = window.location.hostname.replace("camel-edge", "broker-amq-hdls-svc")
+  // var brokerPort = window.location.port 
+  // const brokerUrl=window.location.href+"/test"
+  
+  // var brokerOptions = null
+  
+  // //For local testing: when loading the page directly on the browser
+  // if (brokerHost == ""){
+  //     brokerHost = "localhost"
+  //     brokerPort = "8080"
+  // }
+  
+  // //For local testing
+  // if (brokerPort == "8080"){
+  //     brokerPort = "1883"
+  //     brokerOptions = {onSuccess:onConnect}
+  // }
+  // else{
+  //     brokerPort = "443"
+  //     // brokerOptions = {useSSL:true,onSuccess:onConnect, onFailure:onFailure, onMessageArrived: onMessageArrived, onConnectionLost: onConnectionLost}
+  //     brokerOptions = {useSSL:true,onSuccess:onConnect, onFailure:onFailure}
+  // }
     
-    var brokerOptions = null
-    
-    //For local testing: when loading the page directly on the browser
-    if (brokerHost == ""){
-        brokerHost = "localhost"
-        brokerPort = "8080"
-    }
-    
-    //For local testing
-    if (brokerPort == "8080"){
-        brokerPort = "1883"
-        brokerOptions = {onSuccess:onConnect}
-    }
-    else{
-        brokerPort = "443"
-        // brokerOptions = {useSSL:true,onSuccess:onConnect, onFailure:onFailure, onMessageArrived: onMessageArrived, onConnectionLost: onConnectionLost}
-        brokerOptions = {useSSL:true,onSuccess:onConnect, onFailure:onFailure}
-    }
-    
-    let uid = Date.now().toString(36) + Math.random().toString(36).substr(2)
+    // let uid = Date.now().toString(36) + Math.random().toString(36).substr(2)
 
     // Create a client instance
     // clientMqtt = new Paho.MQTT.Client(brokerHost, Number(brokerPort), "MonitorClient");
+    // clientMqtt = new Paho.MQTT.Client(brokerHost, Number(brokerPort), "MonitorClient-"+uid);
+    brokerHost = "broker-amq-mqtt-edge1.apps.cluster-2q6z5.sandbox1597.opentlc.com"
+    brokerPort = "443"
+    brokerOptions = {useSSL:true,onSuccess:onConnect, onFailure:onFailure}
+    let uid = Date.now().toString(36) + Math.random().toString(36).substr(2)
     clientMqtt = new Paho.MQTT.Client(brokerHost, Number(brokerPort), "MonitorClient-"+uid);
     // clientMqtt = new Paho.MQTT.Client(brokerHost, Number(brokerPort));
     
@@ -74,7 +79,7 @@ function initMqtt(){
 function onConnect() {
     console.log("MQTT: connected to broker");
     clientMqtt.onMessageArrived = onMessageArrived;
-    clientMqtt.subscribe("monitor", 1);
+    clientMqtt.subscribe("plc", 1);
 }
 
 function onConnectionLost(responseObject){
@@ -86,11 +91,11 @@ function onFailure(responseObject){
 }
 
 function onMessageArrived(msg){
-    console.log("MQTT message: "+msg.payloadString);
+    console.log("MQTT message payload: "+msg.payloadString);
 
     let message = JSON.parse(msg.payloadString)
 
-    console.log("MQTT message: "+message.origin);
+    console.log("MQTT message origin: "+message.origin);
 
     //When message is an MQTT inference response
     if(message.origin == "mqtt"){
@@ -688,7 +693,6 @@ function trainData() {
                         // y: posY, 
                         y: 2, 
                         z: 0}
-        
         msg.setAttribute(
             'animation',
             {  property: 'position', 
@@ -697,17 +701,15 @@ function trainData() {
                to: target,
                easing: 'easeOutQuad'
             });
-       
         // let from = {  x: -3+.6,
         //                 y: posY, 
         //                 z: 0}
-        
+
+
         let from = target;
-        
-        target = {  x: -4+.6,
-                        y: 0, 
+        target = {  x: 0,
+                        y: .7, 
                         z: 0}
-  
           msg.setAttribute(
             'animation__2',
             {  property: 'position', 
@@ -720,23 +722,35 @@ function trainData() {
 
 
             from = target;
-        
-            // target = {  x: 4-.6,
             target = {  x: 0,
                             y: 0, 
                             z: 0}
-      
               msg.setAttribute(
                 'animation__3',
                 {  property: 'position', 
-                   dur: '2000', 
+                   dur: '1000', 
                    delay: 1950, 
                    from: from,
                    to: target,
                    // easing: 'easeOutQuad'
                 });
+
+            from = target;
+            // target = {  x: 4-.6,
+            target = {  x: 0,
+                            y: 0, 
+                            z: 0}
+              msg.setAttribute(
+                'animation__4',
+                {  property: 'position', 
+                   dur: '2000', 
+                   delay: 3950, 
+                   from: from,
+                   to: target,
+                   // easing: 'easeOutQuad'
+                });
         
-        /*
+                /*
           msg.setAttribute(
             'animation__color',
             {  property: 'color', 

@@ -427,7 +427,7 @@ function sendMqtt(srcImage) {
 // Start the video stream when the window loads
 window.addEventListener("load", cameraStart, false);
 
-
+// 現在表示しているページのエンドポイントのcamel-edgeという文字列をbroker-amq-mqttに置換して、ActiveMQのRouteのエンドポンイントを指定する
 var brokerHost = window.location.hostname.replace("camel-edge", "broker-amq-mqtt")
 var brokerPort = window.location.port 
 const brokerUrl=window.location.href+"/test"

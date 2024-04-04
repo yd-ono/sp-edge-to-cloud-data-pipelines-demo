@@ -113,13 +113,13 @@
     <a-scene id="scene" myoutline cursor="rayOrigin:mouse" raycaster="objects: .clickable, .testcollidable" vr-mode-ui="enabled: false">
 
         <a-assets>
-            <img id="iot-camera" src="img/camera.png" >
+            <img id="plc" src="img/plc.png" >
+            <img id="device-gateway" src="img/device-gateway.jpg" >
             <img id="mqtt-broker" src="img/mqtt-broker.png" >
             <img id="ai" src="img/ai.png" >
             <img id="s3green" src="img/s3-green.png" >
             <img id="s3red" src="img/s3-red.png" >
-            <img id="device" src="img/device.png" >
-            <img id="price" src="img/price.png" >
+            <img id="anormal" src="img/anormal.png" >
             <img id="valid" src="img/valid.png" >
             <img id="invalid" src="img/valid-not.png" >
           </a-assets>
@@ -136,15 +136,16 @@
 
 
           <!-- Using the asset management system. -->
-          <a-image src="#iot-camera" position="-8 2 -.15" scale="2 2 2">
-            <a-text position="0 .4 0" value="IoT Camera" align="center" scale=".75 .75 .75"></a-text>
+          <a-image src="#plc" position="-8 2.2 -.15" scale="2.0 1.5 1.0">
+            <a-text position="0 .4 0" value="PLC" align="center" scale=".75 .75 .75"></a-text>
             <!-- <a-box color="white" depth=".1" height=".5" width="0.5"></a-box> -->
           </a-image>
           <!-- <a-image src="#device" position="-8 0 0"  width="1.33" height="1"> -->
-            <a-image src="#device" position="-8 0 -.15">
-            <a-text position="0 -.8 0" value="Device" align="center" scale="1.5 1.5 1.5"></a-text>
+          <a-image src="#device-gateway" position="-3.4 2 -.15" scale="1.8 1.0 1.0">
+            <!-- <a-text position="0 .8 0" value="Device Gateway" align="center" scale="1.5 1.5 1.5"></a-text> -->
+            <!-- <a-box color="tomato" depth=".1" height=".5" width="0.5"></a-box> -->
           </a-image>
-          <a-image src="#mqtt-broker" position="-3.4 2 -.15">
+          <a-image src="#mqtt-broker" position="0 1 -.15">
             <a-text position="0 .8 0" value="MQTT Broker" align="center" scale="1.5 1.5 1.5"></a-text>
             <!-- <a-box color="tomato" depth=".1" height=".5" width="0.5"></a-box> -->
           </a-image>
@@ -155,8 +156,8 @@
             <!-- <a-box color="blue" depth=".1" height=".5" width="0.5"></a-box> -->
           </a-image>
 
-          <a-image src="#price" position="0 -3 -.15" width="1" height="1"> 
-            <a-text position="0 -.8 0" value="Price Engine" align="center" scale="1.5 1.5 1.5"></a-text>
+          <a-image src="#anormal" position="0 -3 -.15" width="1.5" height="1.5"> 
+            <a-text position="0 -.8 0" value="Anormal Detection Engine" align="center" scale="1.5 1.5 1.5"></a-text>
             <!-- <a-box color="blue" depth=".1" height=".5" width="0.5"></a-box> -->
           </a-image>
 
